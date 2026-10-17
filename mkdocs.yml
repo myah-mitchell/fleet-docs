@@ -1,11 +1,11 @@
-site_name: Documentation, How-Tos, and Ramblings
-site_url: https://myah-mitchell.github.io/docs/
+site_name: Fleet documentation
+site_url: https://myah-mitchell.github.io/fleet-docs/
 site_author: Myah Mitchell
 copyright: >
   Copyright &copy; 2026 Myah Mitchell.
   Licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.
-repo_url: https://github.com/myah-mitchell/docs
-repo_name: myah-mitchell/docs
+repo_url: https://github.com/myah-mitchell/fleet-docs
+repo_name: myah-mitchell/fleet-docs
 edit_uri: edit/main/content/
 docs_dir: content
 
@@ -36,8 +36,6 @@ hooks:
 
 plugins:
   - search
-  - blog:
-      blog_dir: blog
   # Old addresses, and the page each one leads to.
   - redirects:
       redirect_maps:
@@ -207,10 +205,6 @@ nav:
           - tools/crowdsec/index.md
       - Technitium:
           - tools/technitium/index.md
-  - How-tos:
-      - how-tos/index.md
   - Standards:
       - standards/index.md
       - Markdown style guide: standards/markdown-style-guide.md
-  - Ramblings:
-      - blog/index.md

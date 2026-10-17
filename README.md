@@ -1,6 +1,6 @@
-# docs
+# fleet-docs
 
-Source for [Documentation, How-Tos, and Ramblings](https://myah-mitchell.github.io/docs/), built with [MkDocs](https://www.mkdocs.org/) and [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/). Pages live in `content/`, text that several pages include lives in `snippets/`, and the navigation is in `mkdocs.yml`.
+Source for [Fleet documentation](https://myah-mitchell.github.io/fleet-docs/), built with [MkDocs](https://www.mkdocs.org/) and [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/). Pages live in `content/`, text that several pages include lives in `snippets/`, and the navigation is in `mkdocs.yml`.
 
 Every page follows the [Markdown style guide](content/standards/markdown-style-guide.md).
 
@@ -12,7 +12,7 @@ python3 -m venv .venv
 .venv/bin/mkdocs serve
 ```
 
-Open `http://127.0.0.1:8000/docs/`. The page reloads on save.
+Open `http://127.0.0.1:8000/fleet-docs/`. The page reloads on save.
 
 Before pushing, run the same checks CI does:
 
@@ -37,12 +37,10 @@ A page about one of the fleet's tools goes in `content/tools/<tool>/`. The prime
 
 A diagram is a `mermaid` code block in the page. See [Diagrams](content/standards/markdown-style-guide.md#diagrams) for when an SVG is used instead.
 
-A post goes in `content/blog/posts/` and needs front matter with a `date`, which the blog plugin reads.
-
 ## Versions
 
 `requirements.txt` pins MkDocs to 1.6. MkDocs 2.0 drops the plugin and theme system this site depends on, so do not upgrade past 1.x without planning a migration.
 
 ## License
 
-Copyright (C) 2026 Myah Mitchell. Everything in this repo, the published pages and their code snippets included, is licensed under [Creative Commons Attribution-ShareAlike 4.0 International](LICENSE). You can copy, adapt, and republish it, commercially too, as long as you credit Myah Mitchell with a link to <https://myah-mitchell.github.io/docs/>, say what you changed, and release your version under the same license.
+Copyright (C) 2026 Myah Mitchell. Everything in this repo, the published pages and their code snippets included, is licensed under [Creative Commons Attribution-ShareAlike 4.0 International](LICENSE). You can copy, adapt, and republish it, commercially too, as long as you credit Myah Mitchell with a link to <https://myah-mitchell.github.io/fleet-docs/>, say what you changed, and release your version under the same license.

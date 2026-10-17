@@ -36,7 +36,7 @@ To hold an agent to it, add this to that repo's `CLAUDE.md`:
 ## Documentation
 
 Markdown files follow the house standard at
-https://myah-mitchell.github.io/docs/standards/markdown-style-guide/. In short: bold is what the reader does
+https://myah-mitchell.github.io/fleet-docs/standards/markdown-style-guide/. In short: bold is what the reader does
 (**Save**, **Deploy**), italic is what the screen says (*Username*,
 *Settings > Variables*), code is a string the reader copies, types, runs
 or matches exactly (`docker compose ps`, `--full`). A name being
