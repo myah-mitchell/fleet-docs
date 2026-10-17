@@ -113,7 +113,7 @@ More than about three code spans in one sentence is the signal.
 
 #### When a plain name would not survive
 
-Keep the marker where dropping it would mislead or garble. This exception stays narrow, or it grows back into the category rule it replaced.
+Keep the marker where dropping it would mislead or garble. The exception is deliberately narrow: stretched any further, it becomes the category rule described next.
 
 It applies to a literal that collides with an ordinary word, so that plain text reads as prose rather than as a value: `main` as a branch, the `users` role, a service account called `ansible`.
 
@@ -121,7 +121,7 @@ It also applies to anything that is not a word: `target: docker_host`, `NODE_EXP
 
 #### Why this is not a category rule
 
-The obvious alternative is to mark by kind: all hostnames, all filenames, all VM names. It is easier to apply and it can be linted, and it is what this guide used to say.
+The obvious alternative is to mark by kind: all hostnames, all filenames, all VM names. It is easier to apply, and it can be linted.
 
 It fails on repetition. The words a document uses most are the ones the document is about, so a category rule marks them in every other sentence. A page about one host will name that host forty times and have the reader type it four.
 
@@ -260,7 +260,7 @@ Put the link at the end of the sentence, or on its own line. A sentence interrup
 
 ### One aside per step, not one per sentence
 
-History, alternatives not taken, and future plans are all worth writing down, but they belong in a *Background* or *What's next* section rather than woven through the instructions.
+Alternatives not taken, future plans, and history that earns its place are all worth writing down, but they belong in a *Background* or *What's next* section rather than woven through the instructions. See [history](#history) for when history earns its place.
 
 ## Procedures and runbooks
 
@@ -352,7 +352,7 @@ Give a heading an explicit anchor when another page links to it. The heading can
 - Lower case, kebab-case, no space inside the braces.
 - Link to the anchor, never to a step number. `See [the run](id01-identity.md#run)` survives a new step 2. "See step 3" does not.
 - Inside one page, a plain "step 3" is fine. The reader can see the numbers, and whoever renumbers the page sees the reference.
-- An anchor is a promise. Changing one is the breaking change that renaming a heading used to be.
+- An anchor is a promise. Changing one breaks every inbound link, so treat it as a breaking change.
 
 ### Includes
 
@@ -496,9 +496,19 @@ A how-to makes one change with one tool: adding a route, a mailbox, an alert rul
 - Explain the why when a step is surprising, in a plain sentence after the step.
 - Prefer prose for anything with a train of thought. Bullets are for genuine lists: options, prerequisites, alternatives.
 - Say it once. A paragraph that restates the step above it gets deleted.
+- Describe what is, not how it got there. No "used to", "previously", "now does", "replaces the old", or "this guide used to say". A page reads as if the reader is meeting the subject for the first time, and change history belongs in commit messages and a `CHANGELOG`. The exception is [history](#history) that earns a *Background* section.
 - Be specific about versions and dates: "needs ansible-core >= 2.15", not "needs a recent ansible".
 - No filler openers ("It's worth noting that", "In conclusion"), no hedging where the answer is known, no emoji as decoration.
 - Keep terminology fixed within a repo. Pick one of datastore, storage pool, or target, and use it everywhere including headings.
+
+### History
+
+History goes in a *Background* section, never in a step or an explanatory paragraph, and only when it meets one of two tests:
+
+- It is important to understanding or safely changing the current design: a past failure that a guard exists to prevent, or a reversal that someone is likely to undo again without knowing why.
+- It answers a question a future reader is likely to ask, such as "why isn't this done the obvious way?" or "where did the old X go?"
+
+Everything else, including what a page or the code used to say, stays in the commit history. Write the section about the subject, not about earlier versions of the page: "Plain `example.com` was tried and dropped because readers had to translate every hostname", not "this guide used to say".
 
 ## Code blocks and commands
 
@@ -770,6 +780,7 @@ Prose:
 - [ ] Second person, present tense, active voice
 - [ ] Consistent terminology throughout the repo
 - [ ] No em-dashes, no filler openers, no AI-attribution markers
+- [ ] No references to earlier versions of the page or the code, except history in a *Background* section that passes the [history](#history) tests
 - [ ] Version and dependency claims specific and current
 
 Verification:
