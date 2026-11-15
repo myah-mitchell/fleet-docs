@@ -142,8 +142,8 @@ sudo iptables -S nixos-fw
 | Account | Signs in with | Over SSH | sudo |
 | --- | --- | --- | --- |
 | root | The admin password, at the console only | No | Not needed |
-| The admin, `abbr_name` followed by `admin` | The keys in `admin_ssh_public_keys` over SSH, or the admin password at the console | Yes | Without a password |
-| The client, `client_account` | The keys in `client_ssh_public_keys` over SSH, or the client password at the console | Yes | Without a password |
+| The admin, `abbr_name` followed by `admin` | The keys in `admin_ssh_public_keys` over SSH, or the admin password at the console | Yes | With the admin password |
+| The client, `client_account` | The keys in `client_ssh_public_keys` over SSH, or the client password at the console | Yes | With the client password |
 | The deploy account, `ansible` | The keys in `ansible_ssh_public_keys` only. It has no password | Yes | Without a password |
 
 `abbr_name` is the identity value of that name, so a fleet whose `abbr_name` is `mm` has the admin `mmadmin`. See [identity values](fleet-private.md#identity).
