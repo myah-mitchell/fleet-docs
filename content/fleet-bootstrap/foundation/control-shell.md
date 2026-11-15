@@ -22,6 +22,7 @@ Status: run once, from a new nix install on Ubuntu 26.04 under WSL2 with systemd
 | `<admin-public-key>` | The public key `age-keygen` prints for the admin key in [step 4](#age-keys) |
 | `<deploy-public-key>` | The public key it prints for the deploy key |
 | `<state-passphrase>` | The passphrase OpenTofu encrypts its state with, generated in [step 5](#environment) |
+| `<github-token>` | A GitHub token that can only read public repositories, created in [step 5](#github-token) |
 
 ## 1. Get the tools {#tools}
 
@@ -209,7 +210,7 @@ plan  { method = method.aes_gcm.main }'
 | `SOPS_AGE_KEY_FILE` | sops | The path of the deploy key |
 | `TF_ENCRYPTION` | OpenTofu | How to encrypt the state: a key made from the passphrase, used for both the state and a saved plan |
 
-Later pages add three more lines to this file as the values come into existence: the Proxmox API token, and Komodo's API key and secret.
+Later pages add three more lines to this file, besides the GitHub token below, as the values come into existence: the Proxmox API token, and Komodo's API key and secret.
 
 Load the file in every new shell before running anything:
 
@@ -229,6 +230,30 @@ The state holds everything OpenTofu knows about each VM, and a provider is free 
 The fleet-opentofu repo marks the encryption as enforced. Without `TF_ENCRYPTION` in the environment, OpenTofu refuses to plan or apply, so an unencrypted state is never written by accident.
 
 </details>
+
+### The GitHub token {#github-token}
+
+`provision.yml` sets up your own login on a Proxmox host with [dfutil](https://github.com/myah-mitchell/dfutil), which looks up about 50 GitHub releases the first time it runs on a host. GitHub allows 60 of those lookups an hour from one address without a token, so a second host set up within the hour fails. With a token the limit is 5,000 an hour.
+
+Create a token that can read public repositories and nothing else:
+
+1. On GitHub, click your profile picture, then **Settings**.
+2. Open *Developer settings > Personal access tokens > Fine-grained tokens* and click **Generate new token**.
+3. Set *Token name* to `fleet-dfutil`, and pick an *Expiration*.
+4. Under *Repository access*, choose **Public repositories**. Leave *Permissions* empty.
+5. Click **Generate token**, and store the token in your password manager.
+
+Add it to `~/.config/fleet/env`, with the token in place of `<github-token>`:
+
+```bash
+export GITHUB_TOKEN="<github-token>"
+```
+
+| Variable | Read by | Holds |
+| --- | --- | --- |
+| `GITHUB_TOKEN` | dfutil, through `provision.yml` | A token for GitHub's API, which raises its limit |
+
+`provision.yml` passes the token to dfutil only when it is set. Once the token expires, GitHub refuses it and dfutil stops with an authentication error, so create a new one and replace the line.
 
 ## 6. Set the fleet-wide values {#fleet-values}
 
@@ -390,4 +415,5 @@ Put the installer ISO on the Proxmox host, and create the API token the run reac
 
 - The `Match` block against a real host. `ssh -G` shows that a login as `ansible` or root to an address in the two networks takes the fleet's key.
 - Installing nix under WSL without systemd. The `--daemon` install works on a WSL2 distribution that runs systemd.
+- The *Public repositories* choice under *Repository access*, and dfutil's error once the token expires. GitHub's documentation says a fine-grained token can always read public repositories, and names neither.
 - `provision.yml` finding netaddr and jmespath in nix's ansible. The `json_query` and `ansible.utils.ipaddr` filters both worked in `nix shell nixpkgs#ansible` with ansible-core 2.21.4, and the playbook itself has not been run from it.
