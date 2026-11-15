@@ -156,6 +156,7 @@ nav:
           - Reading a plan before applying: tools/opentofu/read-a-plan.md
           - "Changing a VM's CPU or memory": tools/opentofu/resize-a-vm.md
           - Removing a VM: tools/opentofu/remove-a-vm.md
+          - Putting VMs on another drive: tools/opentofu/put-vms-on-another-drive.md
       - NixOS:
           - tools/nixos/index.md
           - "Changing a host's setting": tools/nixos/change-a-host-setting.md

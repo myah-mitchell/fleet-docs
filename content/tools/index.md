@@ -14,7 +14,7 @@ These tools take a host from nothing to running containers.
 
 | Tool | Its job | How-tos |
 | --- | --- | --- |
-| [OpenTofu](opentofu/index.md) | Creates the VM in Proxmox | [Reading a plan before applying](opentofu/read-a-plan.md), [Changing a VM's CPU or memory](opentofu/resize-a-vm.md), [Removing a VM](opentofu/remove-a-vm.md) |
+| [OpenTofu](opentofu/index.md) | Creates the VM in Proxmox | [Reading a plan before applying](opentofu/read-a-plan.md), [Changing a VM's CPU or memory](opentofu/resize-a-vm.md), [Removing a VM](opentofu/remove-a-vm.md), [Putting VMs on another drive](opentofu/put-vms-on-another-drive.md) |
 | [NixOS](nixos/index.md) | The operating system, built from a description | [Changing a host's setting](nixos/change-a-host-setting.md), [Opening a firewall port](nixos/open-a-firewall-port.md), [Adding a module to the flake](nixos/add-a-module.md) |
 | [Ansible](ansible/index.md) | Runs the other tools in order | [Running part of a run](ansible/run-part-of-a-run.md), [Adding a variable to the inventory](ansible/add-an-inventory-variable.md), [Reading a failed run](ansible/read-a-failed-run.md) |
 | [Semaphore UI](semaphore/index.md) | Starts runs from a web page and keeps their history | [Adding a Task Template](semaphore/add-a-template.md), [Reading a task's log](semaphore/read-a-task-log.md) |

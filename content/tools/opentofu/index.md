@@ -348,6 +348,7 @@ A change to a VM is an edit to its entry in the tfvars file, a commit, and a run
 | [Reading a plan before applying](read-a-plan.md) | Seeing what a run would do to a VM, and what the plan's lines mean |
 | [Changing a VM's CPU or memory](resize-a-vm.md) | Giving a VM more or fewer cores, or more or less memory |
 | [Removing a VM](remove-a-vm.md) | Destroying a VM and its disks, on purpose |
+| [Putting VMs on another drive](put-vms-on-another-drive.md) | Adding a drive to a Proxmox host and creating the VM disks on it |
 
 These pages of the build guide touch OpenTofu.
 
