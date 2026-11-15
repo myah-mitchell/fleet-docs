@@ -67,7 +67,47 @@ Ansible refuses a password login to a host whose key it has not seen, and step 3
 
 ## 2. Write the fleet's file {#fleet-file}
 
-Add km01 and the `vars` of the `docker_host` group to `hosts.yml`. Copy both from [The inventory entry](../hosts/km01-komodo.md#describe-inventory) on km01's page, then come back to this step. Stop there at the heading *The VM entry*, which [The first run](first-run.md#describe) sends you back for.
+Add the `docker_host` group to `hosts.yml`, with km01 under its `hosts` and the group's settings under its `vars`. The group is a new entry at the top level of the file, beside `all` and `pve_host`. With it, the whole file reads:
+
+```yaml
+all:
+  vars:
+    short_name: "MYMI"
+    abbr_name: "mm"
+    location_abbr: "home"
+    domain_name: "myah-mitchell.com"
+
+pve_host:
+  hosts:
+    vh01:
+      ansible_host: 172.16.1.11
+      serverHostname: "vh01"
+      pve_ssh_host_key: "<vh01-ssh-host-key>"
+  vars:
+    PVE: true
+
+docker_host:
+  hosts:
+    km01:
+      ansible_host: 172.16.7.101
+      serverHostname: "km01"
+      docker_stacks:
+        - system-agent
+        - traefik-agent
+        - komodo-server
+  vars:
+    NIXOS: true
+    network_gateway: "172.16.7.1"
+    docker_stacks_internal_subnet: "172.16.7.0/24"
+    FIREWALL: true
+    DOCKER: true
+    KOMODO: true
+    NODE_EXPORTER: true
+```
+
+Keep your own values in `all` and `pve_host`, and add the `docker_host` block as shown. The YAML is indented with two spaces per level, and a key at the wrong depth puts it in the wrong group.
+
+[The inventory entry](../hosts/km01-komodo.md#describe-inventory) on km01's page explains each key. Read it there, then come back to this step. Stop at the heading *The VM entry*, which [The first run](first-run.md#describe) sends you back for.
 
 km01 goes into the inventory here, ahead of its build, because of how the fleet's file is made.
 
