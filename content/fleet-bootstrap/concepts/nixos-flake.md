@@ -151,7 +151,9 @@ Every connection of the install checks the installer's host key. nixos-anywhere 
 
 If the installer's key changes during an install, nixos-anywhere's first login fails with `Host key verification failed` and it retries without a limit. Stop it with **Ctrl+C**. Nothing is sent to the machine meanwhile.
 
-None of the commands share an SSH connection. Each passes `ControlMaster=no` and `ControlPath=none`, which override an `ssh_config` that keeps connections open. A login that reused a connection `host-state` had opened would skip the host key check.
+No command uses a connection that an `ssh_config` keeps open, since a login that reused a connection `host-state` had opened would skip the host key check. `install-host`, `host-state` and `reset-host` pass `ControlMaster=no` and `ControlPath=none`, so each login is a connection of its own.
+
+`deploy-host` shares one connection between all of nixos-rebuild's commands, with its socket in a temporary folder of its own. The first login checks the host key, and the connection closes when the command ends. A host's firewall refuses the tenth new SSH connection from one address within thirty seconds, and a deploy that opened one connection per command would reach that limit.
 
 > [!WARNING]
 > An install wipes the OS disk and the Docker disk of whatever installer answers at `<address>`. Check the address before you run `install-host` by hand.
