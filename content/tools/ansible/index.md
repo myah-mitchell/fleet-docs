@@ -144,6 +144,8 @@ That strength is the reason the fleet passes very little this way. A value given
 
 `--check` starts a run in check mode: each module works out what it would change and reports it, and changes nothing. `--diff` adds the difference in a file's content to the report.
 
+The fleet's `ansible.cfg` turns diff mode on for every run, checked or not, from Semaphore and from a shell, so no command needs `--diff`. The diff of a new file is its whole contents, so a task that writes a secret sets `diff: false` or `no_log: true`. To leave the diffs out of one run, set `ANSIBLE_DIFF_ALWAYS=False` before the command.
+
 A task can opt out. With `check_mode: false` it runs for real even in a check run, which suits a task that only reads. The fleet's roles mark their read-only steps this way, so a check run still clones the repos it needs and still asks OpenTofu for its plan. See [Seeing what a run would do](../../fleet-bootstrap/concepts/how-a-host-is-built.md#check).
 
 ### Facts {#facts}
@@ -173,7 +175,7 @@ All of the fleet's Ansible is in the [fleet-ansible](https://github.com/myah-mit
 
 | Path in the fleet-ansible repo | Holds |
 | --- | --- |
-| `ansible.cfg` | Ansible's settings for this repo. It turns on the sops plugin that decrypts inventory files ending in `.sops.yaml` |
+| `ansible.cfg` | Ansible's settings for this repo. It turns on the sops plugin that decrypts inventory files ending in `.sops.yaml`, and diff mode for every run |
 | `requirements.yml` | The collections to install on the control node |
 | `group_vars/all/vars.yml` | `github_user`, which every clone address in the roles is built from |
 | `group_vars/all/stacks.yml` | `runs_stacks`, the one test of whether a host runs stacks |
