@@ -4,7 +4,7 @@ This page turns a shell on your own machine into the fleet's first [control node
 
 At the end the shell can read the inventory, decrypt a secret, and run one of the flake's commands, which is what the last step checks. All of the work is commands in a terminal and edits to a few files. No host exists yet, so nothing here can break one. The only waits are the downloads the first time nix fetches a tool.
 
-Status: written, not yet run.
+Status: run once, from a new nix install on Ubuntu 26.04 under WSL2 with systemd. That run had nix 2.35.6, ansible-core 2.21.5, OpenTofu 1.13.9, sops 3.13.3, and age 1.3.2. See [Not yet confirmed](#unconfirmed).
 
 ## Prerequisites
 
@@ -39,7 +39,7 @@ Turn on the flake commands. Add this line to `~/.config/nix/nix.conf`, and creat
 experimental-features = nix-command flakes
 ```
 
-Open a new terminal, then open a shell that has the tools:
+Open a new terminal, then run the following command to open a shell that has the tools:
 
 ```bash
 nix shell nixpkgs#git nixpkgs#ansible nixpkgs#opentofu nixpkgs#sops nixpkgs#age \
@@ -385,8 +385,6 @@ Put the installer ISO on the Proxmox host, and create the API token the run reac
 
 ## Not yet confirmed {#unconfirmed}
 
-- The nix installer on a machine that has no nix. The commands after it were run with nix 2.34.7, which gave ansible-core 2.21.3, OpenTofu 1.12.6, sops 3.13.3, and age 1.3.2.
 - The `Match` block against a real host. `ssh -G` shows that a login as `ansible` or root to an address in the two networks takes the fleet's key.
-- Installing nix under WSL, with and without systemd.
+- Installing nix under WSL without systemd. The `--daemon` install works on a WSL2 distribution that runs systemd.
 - `provision.yml` finding netaddr and jmespath in nix's ansible. The `json_query` and `ansible.utils.ipaddr` filters both worked in `nix shell nixpkgs#ansible` with ansible-core 2.21.4, and the playbook itself has not been run from it.
-- What sops puts in the editor for a file that does not exist yet, in [step 7](#secrets).
