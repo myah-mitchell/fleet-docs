@@ -148,6 +148,8 @@ sudo iptables -S nixos-fw
 
 `abbr_name` is the identity value of that name, so a fleet whose `abbr_name` is `mm` has the admin `mmadmin`. See [identity values](fleet-private.md#identity).
 
+The client logs in to zsh, the shell its [dotfiles](how-a-host-is-built.md#stages) are written for. The other accounts log in to bash.
+
 The fleet has two passwords, each a secret kept as a hash. The admin password, `server-password-hash`, is shared by root and the admin, and the client password, `client-password-hash`, is the client's alone. The deploy account is what the run and [deploy-host](nixos-flake.md#commands) sign in as. The admin and the client are in the `docker` group.
 
 The accounts are fixed by the host's configuration. A password changed with `passwd`, an account added with `useradd`, and a key added to an `authorized_keys` file are all put back by the next deploy. Change the key in `group_vars/all/private.yml`, or a password in `secrets/fleet.yaml`, and run the host. See [Changing a secret](secrets-with-sops.md#edit).
