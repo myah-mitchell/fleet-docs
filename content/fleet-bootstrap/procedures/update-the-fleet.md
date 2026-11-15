@@ -212,7 +212,7 @@ The host collects generations older than 30 days once a week. A generation that 
 
 ## What's next
 
-Build the installer ISO again after an update, so that a new VM or a rebuilt one starts from a current installer. See [The installer ISO](../foundation/proxmox-and-installer.md#installer-iso).
+Build the installer ISO again after an update, so that a new VM or a rebuilt one starts from a current installer. See [Rebuild the ISO](../foundation/proxmox-and-installer.md#rebuild-iso).
 
 ## Not yet confirmed {#unconfirmed}
 

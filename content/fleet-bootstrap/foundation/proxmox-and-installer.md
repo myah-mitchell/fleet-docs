@@ -6,7 +6,7 @@ At the end the Proxmox host lists the ISO in its storage, has a deploy account t
 
 Installing and hardening Proxmox itself is outside these pages. The fleet-ansible repo's pve role does more than this page uses, and its README covers a full run against a Proxmox host.
 
-Status: written, not yet run.
+Status: run once, against one Proxmox host. Step 3 took about three minutes. See [Not yet confirmed](#unconfirmed).
 
 ## Prerequisites
 
@@ -174,9 +174,39 @@ On the Proxmox host, check that the storage lists it:
 pvesm list local --content iso
 ```
 
-The output has a line for `local:iso/fleet-nixos-installer.iso`, which is the name OpenTofu puts in each VM's CD-ROM drive.
+The output has a line for `local:iso/fleet-nixos-installer.iso`, which is the name OpenTofu puts in each VM's CD-ROM drive:
 
-Run this step again after any change to `ansible_ssh_public_keys` or `admin_ssh_public_keys`, once `nixos-sync.yml` has written the change and it is committed. The ISO carries the keys as they were on the day it was built. See [the installer](../concepts/nixos-flake.md#installer) for what else is on it.
+```text
+Volid                                          Format  Type            Size VMID
+local:iso/fleet-nixos-installer.iso            iso     iso       1478590464
+```
+
+### Rebuild the ISO {#rebuild-iso}
+
+The ISO carries the SSH keys as they were on the day it was built. After any change to `ansible_ssh_public_keys` or `admin_ssh_public_keys`, write the fleet's file again and commit it, from `~/src/fleet-ansible`:
+
+```bash
+ansible-playbook -i ../fleet-private/hosts.yml nixos-sync.yml
+git -C ../fleet-private add nixos/
+git -C ../fleet-private commit -m "Write the fleet's new SSH keys"
+```
+
+Then run the `provision.yml` command at the top of this step again.
+
+The ISO is built from `nixos/fleet.json`, not from `private.yml`. A commit that changes only `private.yml` leaves the ISO as it was, and the run copies nothing, since the ISO on the host already matches. If `git commit` reports nothing to commit, `fleet.json` has not changed and the ISO on the host is current.
+
+To force a new build when nothing has changed, delete the ISO from the nix store, then run the `provision.yml` command again:
+
+```bash
+iso=$(nix run ../fleet-nixos#build-installer -- --fleet ../fleet-private)
+nix store delete "${iso%/iso/*}"
+```
+
+The first command prints where the ISO is, and the second deletes the folder that holds it. nix keeps one ISO for each set of inputs, and builds again only when that ISO is missing.
+
+To copy the same ISO to the host again, delete `/var/lib/vz/template/iso/fleet-nixos-installer.iso` on the Proxmox host and run the `provision.yml` command again.
+
+See [the installer](../concepts/nixos-flake.md#installer) for what else is on the ISO.
 
 ## 4. Create the API token {#token}
 
@@ -259,8 +289,4 @@ Create the first VM. See [The first run](first-run.md).
 
 ## Not yet confirmed {#unconfirmed}
 
-- The whole page. No step on it has run against a Proxmox host.
-- The run in [step 3](#installer-iso) with a password login, and the time the build and the copy take. The flake evaluates the ISO from a private repo in the state step 2 leaves it in, and the ISO has been built at 1.4 GiB from the flake's own example.
-- What `pvesm list` prints for the ISO.
-- The `users` tag on a Proxmox host that has only root, and `sudo -n qm` working for the account it creates.
 - The privileges in [step 4](#token) for a VM that is created blank, and `Datastore.Audit` on `local` being enough to put the ISO in a VM's drive.
