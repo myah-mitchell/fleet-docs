@@ -292,7 +292,7 @@ creation_rules:
 
 Hosts are never added to this file by hand. The command that makes a host's keys adds the host. See [Host keys](../concepts/secrets-with-sops.md#host-keys).
 
-Hash the password of the admin account. The commands ask for **the password** twice, ask again until both entries match, and print the hash, which starts with `$y$`. A host needs only the hash to check a login, so the password itself is stored nowhere in the fleet.
+Hash two passwords: one for root and the admin account, and one for your own login. Run the commands once for each. They ask for **the password** twice, ask again until both entries match, and print the hash, which starts with `$y$`. A host needs only the hash to check a login, so the password itself is stored nowhere in the fleet.
 
 ```bash
 bash -c '
@@ -306,7 +306,7 @@ bash -c '
 '
 ```
 
-mkpasswd has no option to confirm a password, so bash reads it twice and passes it on. A typo here would leave the admin account with a password nobody knows. The commands read from the terminal itself, so run them in an interactive terminal; anywhere else they stop with an error about `/dev/tty`.
+mkpasswd has no option to confirm a password, so bash reads it twice and passes it on. A typo here would leave an account with a password nobody knows. The commands read from the terminal itself, so run them in an interactive terminal; anywhere else they stop with an error about `/dev/tty`.
 
 Write the two secrets files from the private repo's folder, where sops finds `.sops.yaml`. Neither file exists yet, so each command opens the editor named in `EDITOR` on a few sample lines that sops itself writes for a new file, and encrypts what you save:
 
@@ -321,20 +321,23 @@ Delete the sample lines in each, and enter these keys and nothing else. The samp
 
 | File | Key | Value |
 | --- | --- | --- |
-| `group_vars/all/secrets.sops.yaml` | `server_password` | The password `provision.yml` gives root, the admin account, and your own login on a Proxmox host. Enter `""` to leave every password as it is |
-| `secrets/fleet.yaml` | `server-password-hash` | The hash `mkpasswd` printed |
+| `group_vars/all/secrets.sops.yaml` | `server_password` | The password `provision.yml` gives root and the admin account on a Proxmox host, and your own login unless `client_password` is set. Enter `""` to leave their passwords as they are |
+| `group_vars/all/secrets.sops.yaml` | `client_password` | Optional. The password `provision.yml` gives your own login on a Proxmox host, when it differs from `server_password` |
+| `secrets/fleet.yaml` | `server-password-hash` | The first hash `mkpasswd` printed, for root and the admin account |
+| `secrets/fleet.yaml` | `client-password-hash` | The second hash, for your own login |
 | `secrets/fleet.yaml` | `komodo-onboarding-key` | The text `placeholder` |
 
-The first file holds one line. A password entered here becomes root's password on the Proxmox host, in place of the one you log in with today. See [the run that sets it](proxmox-and-installer.md#installer-iso).
+The first file holds one line, or two with `client_password`. A password entered here becomes root's password on the Proxmox host, in place of the one you log in with today. See [the run that sets it](proxmox-and-installer.md#installer-iso).
 
 ```yaml
 server_password: ""
 ```
 
-The second file holds two:
+The second file holds three:
 
 ```yaml
 server-password-hash: "$y$..."
+client-password-hash: "$y$..."
 komodo-onboarding-key: "placeholder"
 ```
 

@@ -47,12 +47,12 @@ Treat the deploy key, and Semaphore, as able to take over the whole fleet. To ke
 
 | File | Holds | Read by | Encrypted for |
 | --- | --- | --- | --- |
-| `secrets/fleet.yaml` | `server-password-hash` and `komodo-onboarding-key` | Every host | `admin`, `deploy`, every host |
+| `secrets/fleet.yaml` | `server-password-hash`, `client-password-hash` and `komodo-onboarding-key` | Every host | `admin`, `deploy`, every host |
 | `secrets/hosts/<host>.yaml` | One host's own secrets. Optional | That host | `admin`, `deploy`, that host |
 | `secrets/host-keys/<host>.yaml` | The host's SSH host keys, ed25519 and RSA | `install-host` and `deploy-host` | `admin`, `deploy` |
-| `group_vars/all/secrets.sops.yaml` | `server_password`, for the Proxmox hosts | ansible, on the control node | `admin`, `deploy` |
+| `group_vars/all/secrets.sops.yaml` | `server_password` and `client_password`, for the Proxmox hosts | ansible, on the control node | `admin`, `deploy` |
 
-`server-password-hash` is the password of root, the admin account, and the client account, stored as a hash. `komodo-onboarding-key` is the [onboarding key](../../tools/glossary.md#onboarding-key), which a new host's Periphery shows Komodo Core the first time. See [How a host joins Komodo](how-a-host-is-built.md#onboarding).
+`server-password-hash` is the password of root and the admin account, stored as a hash, and `client-password-hash` is the password of the client account. `komodo-onboarding-key` is the [onboarding key](../../tools/glossary.md#onboarding-key), which a new host's Periphery shows Komodo Core the first time. See [How a host joins Komodo](how-a-host-is-built.md#onboarding).
 
 A host never reads `secrets/host-keys/`, its own file included. `install-host` decrypts the keys on the control node and writes them to the host's persistent disk.
 
@@ -110,13 +110,13 @@ sops set secrets/fleet.yaml '["komodo-onboarding-key"]' '"<onboarding-key>"'
 sops decrypt --extract '["komodo-onboarding-key"]' secrets/fleet.yaml
 ```
 
-Make a value for `server-password-hash` with `mkpasswd`, which asks for the password and prints its hash:
+Make a value for `server-password-hash` or `client-password-hash` with `mkpasswd`, which asks for the password and prints its hash:
 
 ```bash
 nix shell nixpkgs#mkpasswd -c mkpasswd -m yescrypt
 ```
 
-A changed `server-password-hash` replaces the password of all three accounts on every host it is deployed to. See [Accounts](host-layout.md#accounts).
+A changed `server-password-hash` replaces the password of root and the admin account on every host it is deployed to, and a changed `client-password-hash` replaces the client's. See [Accounts](host-layout.md#accounts).
 
 ## The host's SSH keys {#host-keys}
 
@@ -219,7 +219,7 @@ With both keys gone, nobody can read the files or encrypt them for a new key. Th
 
 1. Make a new admin key and a new deploy key, and put their public halves in `.sops.yaml`.
 2. Delete the files under `secrets/` and `group_vars/all/secrets.sops.yaml`, and remove every host's key and rules from `.sops.yaml`.
-3. Write `secrets/fleet.yaml` and `group_vars/all/secrets.sops.yaml` again, with a new password hash and a new onboarding key from Komodo. See [The first secrets](../foundation/control-shell.md#secrets).
+3. Write `secrets/fleet.yaml` and `group_vars/all/secrets.sops.yaml` again, with new password hashes and a new onboarding key from Komodo. See [The first secrets](../foundation/control-shell.md#secrets).
 4. Run `new-host-key` for every host. See [The host's SSH keys](#host-keys).
 5. Commit, and rebuild each host in turn. The installer ISO holds no secret and needs no change.
 
@@ -230,7 +230,7 @@ Keep the admin key in a password manager, apart from anything that holds the dep
 Tried with sops 3.13.3 against a copy of the example fleet: editing and setting a value, `new-host-key` for a new host and for a host whose keys were deleted, replacing the admin key with `sops updatekeys`, and the old key failing afterwards. `sops rotate` was tried on every file of the example fleet, which still decrypted afterwards. No host was involved.
 
 - A host decrypting `secrets/fleet.yaml` at activation with the key on its persistent disk.
-- A changed `server-password-hash` taking effect on a host at the next deploy.
+- A changed `server-password-hash` or `client-password-hash` taking effect on a host at the next deploy.
 - A host whose keys were replaced, after its rebuild: that `deploy-host` accepts it and that Periphery reconnects as the same Server.
 - ansible decrypting `group_vars/all/secrets.sops.yaml` from Semaphore, with the key in the Variable Group.
 - Starting the secrets over after losing both keys. The steps follow from how the files are made, and nobody has followed them.

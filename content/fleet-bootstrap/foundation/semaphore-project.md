@@ -127,9 +127,10 @@ The run's secrets are not extra variables either. They are in the private repo, 
 
 | Secret | Where the run reads it |
 | --- | --- |
-| The password of the admin account | `server-password-hash` in `secrets/fleet.yaml`, read by each host |
+| The password of root and the admin account | `server-password-hash` in `secrets/fleet.yaml`, read by each host |
+| The password of the client account | `client-password-hash` in `secrets/fleet.yaml`, read by each host |
 | The onboarding key | `komodo-onboarding-key` in `secrets/fleet.yaml`, read by each host |
-| `server_password`, for a Proxmox host | `group_vars/all/secrets.sops.yaml` |
+| `server_password` and `client_password`, for a Proxmox host | `group_vars/all/secrets.sops.yaml` |
 
 </details>
 

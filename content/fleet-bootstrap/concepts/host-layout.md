@@ -141,16 +141,16 @@ sudo iptables -S nixos-fw
 
 | Account | Signs in with | Over SSH | sudo |
 | --- | --- | --- | --- |
-| root | The fleet's password, at the console only | No | Not needed |
-| The admin, `abbr_name` followed by `admin` | The keys in `admin_ssh_public_keys` over SSH, or the fleet's password at the console | Yes | Without a password |
-| The client, `client_account` | The keys in `client_ssh_public_keys` over SSH, or the fleet's password at the console | Yes | Without a password |
+| root | The admin password, at the console only | No | Not needed |
+| The admin, `abbr_name` followed by `admin` | The keys in `admin_ssh_public_keys` over SSH, or the admin password at the console | Yes | Without a password |
+| The client, `client_account` | The keys in `client_ssh_public_keys` over SSH, or the client password at the console | Yes | Without a password |
 | The deploy account, `ansible` | The keys in `ansible_ssh_public_keys` only. It has no password | Yes | Without a password |
 
 `abbr_name` is the identity value of that name, so a fleet whose `abbr_name` is `mm` has the admin `mmadmin`. See [identity values](fleet-private.md#identity).
 
-The fleet's password is one secret, `server-password-hash`, shared by root, the admin, and the client. The deploy account is what the run and [deploy-host](nixos-flake.md#commands) sign in as. The admin and the client are in the `docker` group.
+The fleet has two passwords, each a secret kept as a hash. The admin password, `server-password-hash`, is shared by root and the admin, and the client password, `client-password-hash`, is the client's alone. The deploy account is what the run and [deploy-host](nixos-flake.md#commands) sign in as. The admin and the client are in the `docker` group.
 
-The accounts are fixed by the host's configuration. A password changed with `passwd`, an account added with `useradd`, and a key added to an `authorized_keys` file are all put back by the next deploy. Change the key in `group_vars/all/private.yml`, or the password in `secrets/fleet.yaml`, and run the host. See [Changing a secret](secrets-with-sops.md#edit).
+The accounts are fixed by the host's configuration. A password changed with `passwd`, an account added with `useradd`, and a key added to an `authorized_keys` file are all put back by the next deploy. Change the key in `group_vars/all/private.yml`, or a password in `secrets/fleet.yaml`, and run the host. See [Changing a secret](secrets-with-sops.md#edit).
 
 The admin and deploy keys are also inside the [installer ISO](../../tools/glossary.md#installer-iso), so the ISO is built again after either list changes. See [The installer](nixos-flake.md#installer).
 
@@ -174,5 +174,5 @@ The layout was read from the flake's modules and from an evaluation of the examp
 - Docker with `userns-remap` on NixOS. Run `cat /etc/subuid` on a host if the offset ever looks wrong: the line for `dockremap` starts at 100000.
 - The folders and seed files as the host makes them, with the owners and modes the stacks expect.
 - The firewall rules on a host: the SSH rate limit, the rules that admit the internal subnet only, and the `DOCKER-USER` rules for internal ports that a container publishes. Check them with `sudo iptables -S DOCKER-USER` on a Docker host.
-- Signing in as root at the Proxmox console with the fleet's password.
+- Signing in as root at the Proxmox console with the admin password.
 - Node Exporter starting with the password and certificate made at first boot.

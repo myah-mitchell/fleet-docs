@@ -142,7 +142,7 @@ ansible-playbook -i ../fleet-private/hosts.yml provision.yml \
 
 Enter **root's password** when asked. The recap shows `failed=0` for each Proxmox host.
 
-The run sets root's password to `server_password` when that value is not empty, and gives the admin account and your own login the same one. With `server_password: ""`, from [the secrets](control-shell.md#secrets), no password changes.
+The run sets root's password to `server_password` when that value is not empty, and gives the admin account the same one. Your own login gets `client_password`, or `server_password` when `client_password` is not set. An empty value, from [the secrets](control-shell.md#secrets), leaves those passwords as they are.
 
 `provision.yml` is the fleet-ansible playbook that configures Proxmox hosts. The two tags limit it to the ISO and the accounts. This is the one run that logs in as root with a password, since the deploy account does not exist until it finishes.
 

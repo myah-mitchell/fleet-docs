@@ -49,7 +49,7 @@ The rest are [secrets](#secrets), encrypted with [sops](../../tools/sops/index.m
 | `secrets/fleet.yaml` | The secrets every host reads | You, through sops |
 | `secrets/hosts/<host>.yaml` | One host's own secrets. Optional | You, through sops |
 | `secrets/host-keys/<host>.yaml` | The host's SSH host keys | `new-host-key` |
-| `group_vars/all/secrets.sops.yaml` | `server_password`, for the Proxmox hosts | You, through sops |
+| `group_vars/all/secrets.sops.yaml` | `server_password` and `client_password`, for the Proxmox hosts | You, through sops |
 
 The host's name links them. It is the key in `hosts.yml`, the key in the tfvars file in lower case, and the name of every file with `<host>` in its path.
 
