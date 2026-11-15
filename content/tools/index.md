@@ -6,7 +6,7 @@ Every primer has the same sections: what the tool is, the ideas you need, how th
 
 A how-to is one task from start to finish. Each one carries a status line, since none has been run against a live fleet yet, and lists what is still unconfirmed at its end.
 
-For a single term, see the [glossary](glossary.md). For how the tools fit together, see [The fleet at a glance](../fleet-bootstrap/concepts/the-fleet-at-a-glance.md).
+For a single term, see the [glossary](glossary.md). For a command you have run before, see the [command cheat sheet](cheat-sheet.md). For how the tools fit together, see [The fleet at a glance](../fleet-bootstrap/concepts/the-fleet-at-a-glance.md).
 
 ## Building a host {#building}
 

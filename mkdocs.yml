@@ -150,6 +150,7 @@ nav:
   - Tools:
       - tools/index.md
       - Glossary: tools/glossary.md
+      - Command cheat sheet: tools/cheat-sheet.md
       - OpenTofu:
           - tools/opentofu/index.md
           - Reading a plan before applying: tools/opentofu/read-a-plan.md
