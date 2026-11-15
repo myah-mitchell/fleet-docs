@@ -249,7 +249,7 @@ ansible-playbook -i ../fleet-private/hosts.yml site.yml \
 
 ///
 
-The NixOS stage deploys the host's configuration, which makes the folders the two stacks need and opens their ports. The last stage has Komodo create and deploy `traefik-agent-<host>` and `system-agent-<host>`, and redeploy each Stack whose chain changed.
+The NixOS stage deploys the host's configuration, which makes the folders the two stacks need and opens their ports. The Komodo stage has Komodo create and deploy `traefik-agent-<host>` and `system-agent-<host>`, and redeploy each Stack whose chain changed.
 
 ### Verify the host {#verify}
 
@@ -333,7 +333,7 @@ No host has left bootstrap mode by these steps.
 - The Authentik steps in [step 2](#authentik). The field names follow Authentik's documentation and were not read from a running Authentik. The steps name no button for creating or saving, and the Provider form may ask for more than they set. The *Authorization flow* field and the flow's name, `default-provider-authorization-implicit-consent`, are taken from Authentik's documentation, not from a live instance. Whether one Provider in domain mode is enough for every interface, with the outpost's paths served by id01's Traefik alone, has not been tried.
 - What a browser sees when the Provider is missing. The page expects an error from Traefik on every interface behind the chain.
 - The labels *Destroy* and the Stack's delete action in Komodo, and what deleting a Stack does to containers that are still up. Destroying first makes the second question moot.
-- What the run does when the stand-in is still up. The page expects the deploy of `traefik-agent-<host>` to fail on a container name that is taken, and the run to stop at its last stage.
+- What the run does when the stand-in is still up. The page expects the deploy of `traefik-agent-<host>` to fail on a container name that is taken, and the run to stop at its Komodo stage.
 - system-agent on ci01, where the agents and the vmauth they send to share a host. See [system-agent](../stacks/system-agent.md#unconfirmed).
 - dockns. The containers that carry its labels name a DNS server the stack does not define, so it is not expected to write an internal record. Whether dockns starts with the two UniFi values missing or wrong has not been tried. See [system-agent](../stacks/system-agent.md#unconfirmed).
 - The first certificate on each host. Every host asks Let's Encrypt for its own, under its own names, within the same hour or two.

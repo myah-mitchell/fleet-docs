@@ -65,6 +65,7 @@ Every host gets the base modules: packages, accounts, CA certificates, time, the
 | `auditd` | `AUDITD` | The Linux audit system with the fleet's rules |
 | `mail` | `MAIL` | Postfix, which sends root's mail to the admin list |
 | `mosh` | `MOSH` | mosh and its UDP ports |
+| `dotfiles` | `DOTFILES` | Python, which Ansible needs to log in for the dotfiles stage, and nix-ld, which lets the glibc builds that dfutil downloads run |
 
 [Host layout](host-layout.md) describes what those modules leave on a host: the disks, the folders, the firewall, and the accounts.
 

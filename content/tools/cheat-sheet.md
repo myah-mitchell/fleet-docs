@@ -9,7 +9,7 @@ The commands that come up again and again when running the fleet, each with a on
 | `<host>` | The host's name in the inventory, such as `km01` |
 | `<address>` | The host's address, such as `172.16.7.101` |
 | `<target>` | A host, a group, or a comma-separated list of either |
-| `<tags>` | One or more `site.yml` stages: `vms`, `wait`, `nixos`, `komodo` |
+| `<tags>` | One or more `site.yml` stages: `vms`, `wait`, `nixos`, `komodo`, `dotfiles` |
 | `<admin>` | The admin account, `abbr_name` followed by `admin` |
 | `<vmid>` | The VM's ID in Proxmox |
 | `<generation>` | A generation number from `nixos-rebuild list-generations` |

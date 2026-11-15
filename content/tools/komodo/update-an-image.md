@@ -107,7 +107,7 @@ Periphery pulls the repo, so the new tag reaches the host, and Compose replaces 
 <details>
 <summary>Background: why the run is not the way to redeploy</summary>
 
-The run's last stage has Komodo's [Resource Sync](index.md#resource-sync) deploy a Stack that is not running or whose definition changed. The definition is the host's TOML file in the private repo, which holds the repo, the branch, and the *Environment*. A new image tag changes none of them, so the sync may see nothing to do.
+The run's Komodo stage has Komodo's [Resource Sync](index.md#resource-sync) deploy a Stack that is not running or whose definition changed. The definition is the host's TOML file in the private repo, which holds the repo, the branch, and the *Environment*. A new image tag changes none of them, so the sync may see nothing to do.
 
 The comment in `renovate.json` says the sync redeploys after a merge. Whether Komodo counts a new commit in the Stack's repo as a change has not been checked, and the fleet's sync has no webhook that would run it on a push. Until that is settled, the *Deploy* button is the step that is known to fetch the repo.
 

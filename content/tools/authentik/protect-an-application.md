@@ -73,7 +73,7 @@ ansible-playbook -i ../fleet-private/hosts.yml site.yml \
 
 ///
 
-The last stage redeploys the Stack, and Traefik picks the new label up from the container.
+The Komodo stage redeploys the Stack, and Traefik picks the new label up from the container.
 
 If the fleet's Provider is enough for this application, go to [Verify](#verify).
 

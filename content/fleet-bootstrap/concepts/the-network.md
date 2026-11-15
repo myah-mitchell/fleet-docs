@@ -87,7 +87,7 @@ The fleet needs the flows below, and every one of them crosses the router. Your 
 | --- | --- | --- | --- |
 | The control shell, on Users | The Proxmox host, on MGMT | `8006/tcp`, `22/tcp` | OpenTofu creates VMs through the API. The install logs in over SSH to read a new VM's host key |
 | The control shell, on Users | Every VM, on Servers and the DMZ | `22/tcp` | The run installs and deploys over SSH |
-| The control shell and your browser, on Users | km01 | `9120/tcp` | The run's last stage calls Komodo's API, and you open Komodo at its direct address |
+| The control shell and your browser, on Users | km01 | `9120/tcp` | The run's Komodo stage calls Komodo's API, and you open Komodo at its direct address |
 | Your browser, on Users | Every VM | `443/tcp`, `8443/tcp` | The web interfaces, and each host's Traefik dashboard |
 | ci01, where Semaphore runs | The Proxmox host, on MGMT | `8006/tcp`, `22/tcp` | The same two as the shell, after the handover |
 | The Proxmox host, on MGMT | ci01 | `8025/tcp` | Proxmox's notifications, sent as mail to mailrise |

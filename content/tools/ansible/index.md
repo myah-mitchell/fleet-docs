@@ -120,13 +120,13 @@ A task normally runs on the host it is for: Ansible logs in to the host over SSH
 | `delegate_to: localhost` | The task runs on the control node. It still runs once for each host in the play, and reads that host's variables |
 | `run_once: true` | The task runs once for the whole play, not once for each host |
 
-Delegation is what the whole of the fleet's `site.yml` rests on. Every task in it either only works with variables, which happens on the control node anyway, or is delegated to the control node. The host is the subject of each task and never the place it runs.
+Delegation is what the first four stages of the fleet's `site.yml` rest on. Every task in them either only works with variables, which happens on the control node anyway, or is delegated to the control node. The host is the subject of each task and never the place it runs. The dotfiles stage is the exception, and logs in to the host.
 
 ### Idempotence {#idempotence}
 
 A task is idempotent when running it again leaves things as they are. A module does not run a command blindly. It looks at the current state, compares it with what the task asks for, and acts only on the difference. A task that found nothing to do reports `ok`, and one that acted reports `changed`.
 
-This is why a failed run is fixed by running it again. The steps that finished report `ok` the second time, and the run picks up where it stopped. The fleet's run keeps that property by leaning on tools that have it themselves. See [The four stages](../../fleet-bootstrap/concepts/how-a-host-is-built.md#stages).
+This is why a failed run is fixed by running it again. The steps that finished report `ok` the second time, and the run picks up where it stopped. The fleet's run keeps that property by leaning on tools that have it themselves. See [The five stages](../../fleet-bootstrap/concepts/how-a-host-is-built.md#stages).
 
 ### Tags {#tags}
 
@@ -152,7 +152,7 @@ A task can opt out. With `check_mode: false` it runs for real even in a check ru
 
 A fact is something Ansible finds out about a host by logging in and looking: its operating system, its addresses, its disks. A play gathers facts at its start unless it sets `gather_facts: false`.
 
-Every play in `site.yml` turns gathering off. Gathering needs a login and Python on the host, and the hosts it builds have no Python. A new one does not even exist when the first play starts.
+Every play in `site.yml` turns gathering off. Gathering needs a login and Python on the host, and only a host with the dotfiles feature has Python. A new one does not even exist when the first play starts. The dotfiles stage gathers facts with a task once it has logged in, because the dotfiles role reads the host's processor architecture.
 
 A task can also store a value of its own on a host with the `set_fact` module, for later tasks in the same run to read. The fleet's roles use that to pass what one step worked out to the next.
 
@@ -187,7 +187,7 @@ All of the fleet's Ansible is in the [fleet-ansible](https://github.com/myah-mit
 
 ### How site.yml is laid out {#site-yml}
 
-`site.yml` has four plays, one for each stage of the build. Every play has the same hosts, the ones named in `target`, and each sets `gather_facts: false`. The diagram shows the four plays on the control node, and what each one calls.
+`site.yml` has five plays, one for each stage of the build. Every play has the same hosts, the ones named in `target`, and each sets `gather_facts: false`. The diagram shows the five plays on the control node, and what each one calls.
 
 ```mermaid
 flowchart LR
@@ -196,6 +196,7 @@ flowchart LR
     wait[2. wait task]
     nixos[3. nixos role]
     komodo[4. komodo_stacks role]
+    dotfiles[5. nixos role, dotfiles tasks]
   end
   vms -->|plan and apply| tofu[OpenTofu]
   tofu -->|API, port 8006| proxmox[Proxmox]
@@ -204,19 +205,21 @@ flowchart LR
   nixos -->|nix run| flake[The flake's commands]
   flake -->|SSH| host
   komodo -->|API, port 9120| core[Komodo Core on km01]
+  dotfiles -->|SSH, as the deploy account| host
   core -->|deploys through Periphery| host
 ```
 
-Nothing in the diagram is Ansible logging in to the host. The wait task only tests whether a port answers, the flake's commands make their own SSH connections, and Komodo reaches the host through Periphery, its agent there.
+Only the dotfiles play is Ansible logging in to the host. The wait task only tests whether a port answers, the flake's commands make their own SSH connections, and Komodo reaches the host through Periphery, its agent there.
 
-Four roles do the work, and all four run on the control node only.
+Five roles do the work. All but dotfiles run on the control node only.
 
 | Role | Used by | What it does |
 | --- | --- | --- |
 | vms | `site.yml`, stage 1 | Creates the VMs through OpenTofu |
-| nixos | `site.yml`, stage 3, and `nixos-sync.yml` | Writes a host's NixOS files, and installs and deploys NixOS |
+| nixos | `site.yml`, stages 3 and 5, and `nixos-sync.yml` | Writes a host's NixOS files, installs and deploys NixOS, and logs in to a host for the dotfiles role |
 | stacks | The nixos and komodo_stacks roles | Works out which stacks a host runs and what each needs from the host |
 | komodo_stacks | `site.yml`, stage 4, and `komodo-sync.yml` | Writes a host's Komodo file, and deploys its Stacks |
+| dotfiles | `site.yml`, stage 5, and `provision.yml` | Installs dfutil on the host, which sets up the client account's dotfiles |
 
 The other roles in the repo, such as users, ssh, and pve, configure a Debian-based host and run from `provision.yml` only.
 
@@ -258,6 +261,15 @@ The role runs for a host where `runs_stacks` is true.
 3. Asks Komodo's API whether the host's Server is connected, every 10 seconds, up to 30 times.
 4. Asks Komodo to run the Resource Sync named `fleet` for this host's Stacks only, and waits for it to complete.
 5. Asks for the state of the host's Stacks every 10 seconds, up to 90 times, until every one is running.
+
+### Stage 5: the dotfiles tasks {#stage-dotfiles}
+
+The play runs the nixos role's `dotfiles.yml` for a host whose `NIXOS` and `DOTFILES` variables are both true. In check mode it skips a host that the NixOS stage did not find installed.
+
+1. Decrypts the host's SSH public key from `secrets/host-keys/<host>.yaml` on the control node.
+2. Logs in to the host as the deploy account, with SSH told to trust that key and no other.
+3. Gathers the host's facts.
+4. Runs the dotfiles role, which installs dfutil as the client account when it is missing and has it set up the account's dotfiles. In check mode dfutil does not run.
 
 ### The two sync playbooks {#sync-playbooks}
 

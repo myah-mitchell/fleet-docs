@@ -1,10 +1,10 @@
 # Running part of a run
 
-A run of `site.yml` normally takes a host through all four stages. This page narrows a run: to some hosts, to some stages, or to a report of what it would do with nothing changed. Use it after a change that touches one stage only, or before a run you want to see the effect of first.
+A run of `site.yml` normally takes a host through all five stages. This page narrows a run: to some hosts, to some stages, or to a report of what it would do with nothing changed. Use it after a change that touches one stage only, or before a run you want to see the effect of first.
 
 Status: written, not yet run.
 
-The stages and what each does are in [The four stages](../../fleet-bootstrap/concepts/how-a-host-is-built.md#stages). The ideas used here are [tags](index.md#tags), [extra vars](index.md#extra-vars), and [check mode](index.md#check-mode).
+The stages and what each does are in [The five stages](../../fleet-bootstrap/concepts/how-a-host-is-built.md#stages). The ideas used here are [tags](index.md#tags), [extra vars](index.md#extra-vars), and [check mode](index.md#check-mode).
 
 ## Prerequisites
 
@@ -33,7 +33,7 @@ A run against several hosts creates their VMs in one OpenTofu apply, then instal
 
 ## 2. Choose the stages {#stages}
 
-Each stage has a tag. Without `--tags`, all four run.
+Each stage has a tag. Without `--tags`, all five run.
 
 | Tag | Runs | The control node needs |
 | --- | --- | --- |
@@ -41,6 +41,7 @@ Each stage has a tag. Without `--tags`, all four run.
 | `wait` | The wait for the SSH port | Nothing more |
 | `nixos` | The check of the committed files, an install if the host runs the installer, and the deploy | nix, and the fleet's SSH key |
 | `komodo` | The check of the committed Komodo file, the sync, and the wait for the Stacks | `KOMODO_API_KEY` and `KOMODO_API_SECRET` |
+| `dotfiles` | The client account's dotfiles, on a host with the `DOTFILES` flag | The fleet's SSH key, and `GITHUB_TOKEN` when there is one |
 
 Every combination also needs the deploy key in `SOPS_AGE_KEY` or `SOPS_AGE_KEY_FILE`, because the inventory holds an encrypted file that Ansible decrypts before any task. See [What the run needs](../../fleet-bootstrap/concepts/how-a-host-is-built.md#needs) for each value.
 
@@ -49,7 +50,7 @@ These are the options the build guide uses:
 | Option | Use it when | Used in |
 | --- | --- | --- |
 | `--tags nixos` | The host's configuration changed and its VM and Stacks did not | [Updating the fleet](../../fleet-bootstrap/procedures/update-the-fleet.md) |
-| `--tags komodo` | A stack's values changed and the host did not | [Running only the last stage](../../fleet-bootstrap/procedures/deploy-a-stack-by-hand.md#komodo-stage) |
+| `--tags komodo` | A stack's values changed and the host did not | [Running only the Komodo stage](../../fleet-bootstrap/procedures/deploy-a-stack-by-hand.md#komodo-stage) |
 | `--skip-tags komodo` | Komodo Core is not up to deploy anything | [The first run](../../fleet-bootstrap/foundation/first-run.md#km01-vm) and [Rebuilding km01](../../fleet-bootstrap/procedures/rebuild-a-vm.md#km01) |
 
 `--skip-tags` is the reverse of `--tags`: it leaves out the stages named and runs the rest.

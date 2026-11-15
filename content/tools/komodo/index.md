@@ -151,7 +151,7 @@ flowchart TD
 
 The playbook `komodo-sync.yml` runs on the control node and connects to nothing. For each host it takes the stacks in `docker_stacks`, reads each one's `komodo.env` from fleet-stacks, sets the host's own values in it, and writes one `[[stack]]` block per stack. You commit and push the result, because Komodo reads the pushed copy. See [The generated files](../../fleet-bootstrap/concepts/fleet-private.md#generated).
 
-The last stage of `site.yml` is the `komodo_stacks` role in fleet-ansible, and it talks only to Core's API. It checks that the committed file matches the inventory, waits for the host's Server to be connected, runs the `fleet` sync for that host's Stacks, waits for the sync's Update to complete, and then waits until every one of those Stacks is running. See [The four stages](../../fleet-bootstrap/concepts/how-a-host-is-built.md#stages).
+The Komodo stage of `site.yml` is the `komodo_stacks` role in fleet-ansible, and it talks only to Core's API. It checks that the committed file matches the inventory, waits for the host's Server to be connected, runs the `fleet` sync for that host's Stacks, waits for the sync's Update to complete, and then waits until every one of those Stacks is running. See [The five stages](../../fleet-bootstrap/concepts/how-a-host-is-built.md#stages).
 
 ### What follows from that {#consequences}
 
@@ -200,7 +200,7 @@ The first says whether Periphery is running, the second prints the end of its lo
 | Set Komodo up after its first start | [Setting up Komodo](../../fleet-bootstrap/foundation/komodo-setup.md) |
 | Build or rebuild km01 | [Komodo (km01)](../../fleet-bootstrap/hosts/km01-komodo.md) |
 | Create one Stack in the UI, without the run | [Deploying a stack by hand](../../fleet-bootstrap/procedures/deploy-a-stack-by-hand.md) |
-| Run only the deploy stage | [Running only the last stage](../../fleet-bootstrap/procedures/deploy-a-stack-by-hand.md#komodo-stage) |
+| Run only the deploy stage | [Running only the Komodo stage](../../fleet-bootstrap/procedures/deploy-a-stack-by-hand.md#komodo-stage) |
 
 ## When it goes wrong {#troubleshooting}
 

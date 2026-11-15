@@ -1,6 +1,6 @@
 # Deploying a stack by hand
 
-The run deploys a host's stacks in its last stage, through [Komodo](../../tools/komodo/index.md)'s `fleet` [Resource Sync](../../tools/glossary.md#resource-sync). This page creates and deploys one [Stack](../../tools/glossary.md#stack) in Komodo's UI instead, for the times the run is not an option or you want to see each piece. It also covers running only one part of the run from a shell.
+The run deploys a host's stacks in its Komodo stage, through [Komodo](../../tools/komodo/index.md)'s `fleet` [Resource Sync](../../tools/glossary.md#resource-sync). This page creates and deploys one [Stack](../../tools/glossary.md#stack) in Komodo's UI instead, for the times the run is not an option or you want to see each piece. It also covers running only one part of the run from a shell.
 
 The usual way to give a host a stack is the run. See [Adding a stack to a host](../../tools/komodo/add-a-stack-to-a-host.md). Come here when Semaphore or the sync is what is broken, or to learn what the sync does for you.
 
@@ -96,9 +96,9 @@ A reference that reached a container as literal `[[NAME]]` text means the Variab
 
 Go back to the page that sent you here.
 
-## Running only the last stage {#komodo-stage}
+## Running only the Komodo stage {#komodo-stage}
 
-The `komodo` tag runs the deploy stage of `site.yml` and skips the rest. Use it after changing a stack's values, when nothing about the VM or the host has changed. See [The four stages](../concepts/how-a-host-is-built.md#stages) for the tags.
+The `komodo` tag runs the deploy stage of `site.yml` and skips the rest. Use it after changing a stack's values, when nothing about the VM or the host has changed. See [The five stages](../concepts/how-a-host-is-built.md#stages) for the tags.
 
 From `~/src/fleet-ansible`, in a shell prepared as [Running from a shell again](../foundation/handover.md#shell-runs) describes:
 

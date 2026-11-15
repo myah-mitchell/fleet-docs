@@ -2,7 +2,7 @@
 
 A [Task Template](index.md#task-template) describes one kind of run. The fleet starts with one, `site`, which takes a host through every stage of `site.yml`. Add another when you start the same run with the same options often enough that it deserves a button of its own.
 
-This page adds a Template named `stacks`, which runs only the last stage of `site.yml`. It redeploys a host's Stacks through Komodo and skips the VM and NixOS stages, which is all a host needs after a change in the fleet-stacks repo that touches no folder, file, or port. The same steps fit any other Template.
+This page adds a Template named `stacks`, which runs only the Komodo stage of `site.yml`. It redeploys a host's Stacks through Komodo and skips the VM and NixOS stages, which is all a host needs after a change in the fleet-stacks repo that touches no folder, file, or port. The same steps fit any other Template.
 
 Status: written, not yet run.
 
@@ -26,7 +26,7 @@ Pick the playbook and its options before opening the form. Not every playbook in
 
 The two sync playbooks write files into the private repo for you to review and commit. A [Task](index.md#task) works in Semaphore's own clone and pushes nothing, so files written there never reach the repo. See [After a change](../../fleet-bootstrap/concepts/fleet-private.md#after-a-change).
 
-`site.yml` gives each stage a tag of the same name: `vms`, `wait`, `nixos`, and `komodo`. A run limited to `komodo` checks that the host's committed Komodo file is current, runs the sync for the host's Stacks, and waits until each one is running. See [The four stages](../../fleet-bootstrap/concepts/how-a-host-is-built.md#stages).
+`site.yml` gives each stage a tag of the same name: `vms`, `wait`, `nixos`, `komodo`, and `dotfiles`. A run limited to `komodo` checks that the host's committed Komodo file is current, runs the sync for the host's Stacks, and waits until each one is running. See [The five stages](../../fleet-bootstrap/concepts/how-a-host-is-built.md#stages).
 
 ## 2. Create the Template {#create}
 
@@ -69,7 +69,7 @@ Save the Template. A [Survey Variable](index.md#survey-variable) belongs to one 
 
 In *Task Templates*, open **stacks** and click **Run**. In *Target*, enter `km01`, tick **Dry Run**, and start the Task.
 
-The log shows the first three plays with no tasks under them, since the tag leaves them out. The last play, `Deploy the stacks through Komodo`, confirms km01's committed Komodo file is current and stops there. The recap line for km01 ends with `unreachable=0` and `failed=0`.
+The log shows the other plays with no tasks under them, since the tag leaves them out. The play `Deploy the stacks through Komodo` confirms km01's committed Komodo file is current and stops there. The recap line for km01 ends with `unreachable=0` and `failed=0`.
 
 A [dry run](index.md#dry-run) proves the Template is wired up: the repos cloned, the inventory was read, and the tag was applied. It does not contact Komodo.
 

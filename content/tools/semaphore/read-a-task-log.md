@@ -9,7 +9,7 @@ Nothing here changes anything. The log is read in Semaphore's UI, and it is kept
 ## Prerequisites
 
 - Semaphore has its Project and at least one Task has run, from [The handover](../../fleet-bootstrap/foundation/handover.md#prove).
-- You know roughly what `site.yml` does. See [The four stages](../../fleet-bootstrap/concepts/how-a-host-is-built.md#stages).
+- You know roughly what `site.yml` does. See [The five stages](../../fleet-bootstrap/concepts/how-a-host-is-built.md#stages).
 
 ## 1. Open the Task {#open}
 
@@ -37,7 +37,7 @@ The commit is worth a glance on a Task that passed, too. It tells you which vers
 
 ## 3. Find the stage {#stage}
 
-Ansible prints a line that starts with `PLAY` for each play, and a line that starts with `TASK` for each task inside it. `site.yml` has four plays, one for each stage. Search the log for `PLAY [` and note the last one that has tasks under it.
+Ansible prints a line that starts with `PLAY` for each play, and a line that starts with `TASK` for each task inside it. `site.yml` has five plays, one for each stage. Search the log for `PLAY [` and note the last one that has tasks under it.
 
 | Line in the log | Stage |
 | --- | --- |
@@ -45,13 +45,14 @@ Ansible prints a line that starts with `PLAY` for each play, and a line that sta
 | `PLAY [Wait for the hosts to answer]` | `wait` |
 | `PLAY [Install and deploy NixOS]` | `nixos` |
 | `PLAY [Deploy the stacks through Komodo]` | `komodo` |
+| `PLAY [Set up the client account's dotfiles]` | `dotfiles` |
 
-A `TASK` line names the role and then the task, such as `TASK [nixos : Check the committed files match the inventory]`. The word before the colon is the role, so it names the stage as well.
+A `TASK` line names the role and then the task, such as `TASK [nixos : Check the committed files match the inventory]`. The word before the colon is the role. It names the stage as well, except that the dotfiles stage runs tasks of the nixos role before those of the dotfiles role.
 
 <details>
 <summary>Background: why almost every task says localhost</summary>
 
-Ansible normally logs in to each host and runs its tasks there. `site.yml` does not. Every task runs on the control node, which is Semaphore's container, and the commands those tasks call do the connecting.
+Ansible normally logs in to each host and runs its tasks there. `site.yml` does that only in its dotfiles stage. Every other task runs on the control node, which is Semaphore's container, and the commands those tasks call do the connecting.
 
 The log still prints each result under the host's name, because the play is about that host. A result written as `km01 -> localhost` means the task was about km01 and ran in Semaphore's container. See [Ansible](../ansible/index.md) for plays, tasks, and delegation.
 
@@ -104,7 +105,7 @@ For anything else, the primer lists the first place to look for each symptom. Se
 
 ## 6. Run it again {#again}
 
-Fix the cause, then start the Template again with the same *Target*. Every stage is safe to repeat, and a stage that already finished finds nothing to do. See [The four stages](../../fleet-bootstrap/concepts/how-a-host-is-built.md#stages).
+Fix the cause, then start the Template again with the same *Target*. Every stage is safe to repeat, and a stage that already finished finds nothing to do. See [The five stages](../../fleet-bootstrap/concepts/how-a-host-is-built.md#stages).
 
 The failed Task stays in the history with its log, so the two can be compared later.
 

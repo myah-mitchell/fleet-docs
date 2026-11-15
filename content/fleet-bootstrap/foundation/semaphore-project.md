@@ -136,7 +136,7 @@ The run's secrets are not extra variables either. They are in the private repo, 
 
 ### Secrets tab, Environment Variables {#environment-variables}
 
-Add these six entries. Copy four of them from `~/.config/fleet/env`, each without the word `export` and without the quotes around the value.
+Add these seven entries. Copy five of them from `~/.config/fleet/env`, each without the word `export` and without the quotes around the value.
 
 | Name | Value |
 | --- | --- |
@@ -144,6 +144,7 @@ Add these six entries. Copy four of them from `~/.config/fleet/env`, each withou
 | `TF_VAR_server_api_tokens` | The JSON object from the environment file |
 | `KOMODO_API_KEY` | From the environment file |
 | `KOMODO_API_SECRET` | From the environment file |
+| `GITHUB_TOKEN` | From the environment file |
 | `SOPS_AGE_KEY` | The line of `~/.config/fleet/deploy.key` that starts with `AGE-SECRET-KEY-` |
 | `PG_CONN_STR` | The line below |
 

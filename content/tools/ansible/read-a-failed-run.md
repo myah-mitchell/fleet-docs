@@ -9,7 +9,7 @@ Most stops are not faults. The roles check their inputs before they change anyth
 ## Prerequisites
 
 - The output of the run: the terminal it ran in, or the run's log in Semaphore.
-- For the stage names, [The four stages](../../fleet-bootstrap/concepts/how-a-host-is-built.md#stages).
+- For the stage names, [The five stages](../../fleet-bootstrap/concepts/how-a-host-is-built.md#stages).
 
 ## Placeholders
 
@@ -57,6 +57,7 @@ The role gives the stage:
 | None, and the task is *Wait for the host's SSH port* | Wait |
 | nixos, provision, or stacks before the first komodo_stacks task | NixOS |
 | komodo_stacks, or stacks after it | Deploy the stacks |
+| dotfiles, or nixos after the last komodo_stacks task | Dotfiles |
 
 ## 3. Match the message {#messages}
 

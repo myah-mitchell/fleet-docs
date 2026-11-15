@@ -141,7 +141,7 @@ ansible-playbook -i ../fleet-private/hosts.yml site.yml \
 
 ///
 
-The run ends with `failed=0` and `unreachable=0` for the host. Its NixOS stage switches the host to a system with the new rule, and its last stage redeploys the Stack if the stack's files changed. Run every host whose file changed in step 4, one per run.
+The run ends with `failed=0` and `unreachable=0` for the host. Its NixOS stage switches the host to a system with the new rule, and its Komodo stage redeploys the Stack if the stack's files changed. Run every host whose file changed in step 4, one per run.
 
 ## 6. Verify the rule {#verify}
 
@@ -174,5 +174,5 @@ The entries, the generated file, and the rules the module writes were read from 
 
 - The rules on a host as `iptables -S` prints them, for each of the three cases in step 6. A port marked `any` goes through NixOS's `allowedTCPPorts` or `allowedUDPPorts`, and its line is expected to accept from every address.
 - That a switch reloads the firewall with the new rule and leaves established connections alone.
-- That the run's last stage redeploys a Stack whose compose file changed in the same push.
+- That the run's Komodo stage redeploys a Stack whose compose file changed in the same push.
 - A module that opens a port for a service of the host itself. No module in the flake does so through `allowedTCPPorts` today, apart from the stacks module.

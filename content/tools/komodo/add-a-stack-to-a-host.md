@@ -121,7 +121,7 @@ ansible-playbook -i ../fleet-private/hosts.yml site.yml \
 
 ///
 
-OpenTofu finds nothing to change. The NixOS stage makes the stack's folders and opens its ports, and the last stage has Komodo create the Stack and deploy it. See [From the repo to running containers](index.md#flow).
+OpenTofu finds nothing to change. The NixOS stage makes the stack's folders and opens its ports, and the Komodo stage has Komodo create the Stack and deploy it. See [From the repo to running containers](index.md#flow).
 
 ## 6. Verify {#verify}
 

@@ -123,7 +123,7 @@ flowchart LR
   task -->|API, port 9120| komodo[Komodo on km01]
 ```
 
-The Task talks to Proxmox to create the VM, to the host over SSH to install and deploy NixOS, and to Komodo to deploy the host's stacks. See [The four stages](../../fleet-bootstrap/concepts/how-a-host-is-built.md#stages).
+The Task talks to Proxmox to create the VM, to the host over SSH to install and deploy NixOS and to set up the dotfiles, and to Komodo to deploy the host's stacks. See [The five stages](../../fleet-bootstrap/concepts/how-a-host-is-built.md#stages).
 
 Three more repos take part and have no Repository entry: fleet-nixos, fleet-opentofu, and fleet-stacks. The playbook clones each of them itself. See [Add the repositories](../../fleet-bootstrap/foundation/semaphore-project.md#repositories).
 

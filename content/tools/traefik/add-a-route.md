@@ -175,7 +175,7 @@ ansible-playbook -i ../fleet-private/hosts.yml site.yml \
 
 ///
 
-The run's last stage has Komodo sync the host's Stacks, and the sync deploys a Stack whose definition changed.
+The run's Komodo stage has Komodo sync the host's Stacks, and the sync deploys a Stack whose definition changed.
 
 If only labels changed, the Stack's definition in Komodo is the same as before and the sync may leave it alone. In Komodo's UI, open *Resources > Stacks*, open the Stack, and click **Deploy**. Komodo pulls the repo and recreates the container with its new labels.
 

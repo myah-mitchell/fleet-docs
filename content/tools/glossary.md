@@ -138,7 +138,7 @@ A rule in Traefik that sends requests for one hostname to one container. Traefik
 
 ## Run {#run}
 
-One execution of `site.yml` for the hosts you name. It has four stages: create the VM, wait for it, install and configure NixOS, and sync its Stacks in Komodo. See [How a host is built](../fleet-bootstrap/concepts/how-a-host-is-built.md).
+One execution of `site.yml` for the hosts you name. It has five stages: create the VM, wait for it, install and configure NixOS, sync its Stacks in Komodo, and set up the client account's dotfiles. See [How a host is built](../fleet-bootstrap/concepts/how-a-host-is-built.md).
 
 ## Server {#server}
 

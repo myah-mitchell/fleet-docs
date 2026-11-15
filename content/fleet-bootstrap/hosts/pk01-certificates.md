@@ -39,7 +39,7 @@ In the [private repo](../../tools/glossary.md#private-repo)'s `hosts.yml`, add p
 
 The first three keys are the ones every host has. See [km01's entry](km01-komodo.md#describe) for those. Two keys are new on this page.
 
-`komodo_stacks_manage: false` turns off the run's last stage for this host, the one where [Komodo](../../tools/komodo/index.md) deploys the stacks. The first run then builds pk01 and deploys nothing. [Step 5](#deploy) takes the line out again.
+`komodo_stacks_manage: false` turns off the run's Komodo stage for this host, the one where [Komodo](../../tools/komodo/index.md) deploys the stacks. The first run then builds pk01 and deploys nothing. [Step 5](#deploy) takes the line out again.
 
 `komodo_stack_env` sets a value in a stack's environment for this host alone. See [Stack values](../concepts/fleet-private.md#stack-values).
 

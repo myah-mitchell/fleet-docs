@@ -69,7 +69,7 @@ The run asks for nothing. It ends with `failed=0` for km01.
 | Option | Why it is here |
 | --- | --- |
 | `vms_backend=local` | OpenTofu keeps its state in a file in the shell. The state database is on ci01, which does not exist yet |
-| `--skip-tags komodo` | Komodo is not running yet, so the last stage has nothing to deploy to. Without the option the stage compares km01's committed Komodo file with the inventory, prints which of Komodo's API values are missing, and ends without an error. The option leaves out that check and that message |
+| `--skip-tags komodo` | Komodo is not running yet, so the Komodo stage has nothing to deploy to. Without the option the stage compares km01's committed Komodo file with the inventory, prints which of Komodo's API values are missing, and ends without an error. The option leaves out that check and that message |
 
 | Stage | What it does on this run |
 | --- | --- |
@@ -84,7 +84,7 @@ The [state](../../tools/glossary.md#state) file is `~/.local/state/fleet-opentof
 <details>
 <summary>Background: why km01 takes two runs</summary>
 
-The last stage of a run asks Komodo to deploy the host's Stacks, and on the first run of km01 there is no Komodo to ask. See [The problem it solves](index.md#why).
+The Komodo stage of a run asks Komodo to deploy the host's Stacks, and on the first run of km01 there is no Komodo to ask. See [The problem it solves](index.md#why).
 
 The first run can do everything except the Komodo stage, since the VM and the operating system need nothing from Komodo. That leaves a host with Docker on it and no containers.
 
@@ -142,7 +142,7 @@ ln -sfn $envFile ~/fleet-stacks/stacks/komodo-server/.env
 
 The file lives on the [persistent disk](../../tools/glossary.md#persistent-disk), so a rebuilt km01 finds it and starts Core with the same credentials. The checkout only holds a link to it.
 
-Generate the file's contents with `build.py`, the fleet-stacks script that writes each stack's `.env` from the stack's `komodo.env`. A host has no Python, so nix provides one for this command alone, with the YAML library the script reads the stacks with:
+Generate the file's contents with `build.py`, the fleet-stacks script that writes each stack's `.env` from the stack's `komodo.env`. nix provides a Python for this command alone, with the YAML library the script reads the stacks with:
 
 ```bash
 cd ~/fleet-stacks
@@ -226,7 +226,7 @@ The Komodo stage reads `KOMODO_API_KEY` and `KOMODO_API_SECRET` from the environ
 
 OpenTofu finds nothing to change, and km01 is not installed again. The deploy gives Periphery Core's public key and the onboarding key and restarts it. Periphery connects, and km01 appears in Komodo as a Server.
 
-The last stage then runs the Resource Sync for km01. Komodo creates the Stacks `komodo-server` and `traefik-bootstrap-km01` and deploys both. Core is one of the containers it replaces, so the UI drops for up to a minute while the run waits.
+The Komodo stage then runs the Resource Sync for km01. Komodo creates the Stacks `komodo-server` and `traefik-bootstrap-km01` and deploys both. Core is one of the containers it replaces, so the UI drops for up to a minute while the run waits.
 
 This is the handover of Core's stack that the rest of the page refers to.
 

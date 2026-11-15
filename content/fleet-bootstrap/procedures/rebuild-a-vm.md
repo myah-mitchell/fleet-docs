@@ -432,7 +432,7 @@ The list shows every VM. Until the state is back, do not run ci01 from Semaphore
 
 Follow steps 1 and 2 as written. Then:
 
-1. Run km01 from the shell with the last stage left out, because that stage asks Core to deploy and Core is not running yet. The command is the one in [step 3](#run) with `--skip-tags komodo` added.
+1. Run km01 from the shell with the Komodo stage left out, because that stage asks Core to deploy and Core is not running yet. The command is the one in [step 3](#run) with `--skip-tags komodo` added.
 2. Start Core by hand, as [The first run](../foundation/first-run.md#start-core) does. The file with Core's database credentials is on the persistent disk, so leave its values as they are. Core starts with the credentials its database already has.
 3. Run km01 again with no option added. Komodo takes over Core's containers as it did on the first build, and deploys the rest of km01's Stacks.
 4. Remove your checkout of fleet-stacks from km01.

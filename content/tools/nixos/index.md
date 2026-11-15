@@ -165,13 +165,13 @@ A deploy evaluates the host's configuration on the control node, the machine the
 | `nixos/` in the private repo | The generated JSON files: one for the fleet and one per host |
 | `secrets/` in the private repo | The secrets a host decrypts, encrypted with sops |
 
-A host's JSON file has a `features` object, and each key in it switches one optional module on: the firewall, Docker, Komodo Periphery, Node Exporter, fail2ban, auditd, mail, and mosh. Each comes from an upper-case flag in the inventory. See [A host's configuration](../../fleet-bootstrap/concepts/nixos-flake.md#configuration) for the table, and [Describing a host](../../fleet-bootstrap/concepts/fleet-private.md#describe) for the inventory keys.
+A host's JSON file has a `features` object, and each key in it switches one optional module on: the firewall, Docker, Komodo Periphery, Node Exporter, fail2ban, auditd, mail, mosh, and what the dotfiles need. Each comes from an upper-case flag in the inventory. See [A host's configuration](../../fleet-bootstrap/concepts/nixos-flake.md#configuration) for the table, and [Describing a host](../../fleet-bootstrap/concepts/fleet-private.md#describe) for the inventory keys.
 
 ### What it works with {#neighbours}
 
 | Tool | What passes between them |
 | --- | --- |
-| [Ansible](../ansible/index.md) | Writes the JSON files, and runs the flake's commands from the control node. It runs nothing on a NixOS host |
+| [Ansible](../ansible/index.md) | Writes the JSON files, and runs the flake's commands from the control node. On a NixOS host it runs only the dotfiles role |
 | [OpenTofu](../opentofu/index.md) | Creates the blank VM and its three disks, which the installer and then NixOS take over |
 | [sops](../sops/index.md) | Encrypts the secrets in the private repo. A host decrypts them into `/run/secrets` each time a system is activated, with a key that follows from its SSH host key |
 | [Komodo](../komodo/index.md) | Its agent, Periphery, runs as a systemd service that the host's configuration defines |

@@ -83,9 +83,10 @@ flowchart TD
   control -->|4. sync this host's Stacks| komodo[Komodo Core on km01]
   host -->|Periphery dials out| komodo
   komodo -->|deploy the Stacks| host
+  control -->|5. set up the client's dotfiles| host
 ```
 
-The control node is whatever machine the run starts from: a shell on your own machine for the first two hosts, and Semaphore from then on. It does all the work. The new host is told what to become and never has to be logged in to.
+The control node is whatever machine the run starts from: a shell on your own machine for the first two hosts, and Semaphore from then on. It does all the work. The new host is told what to become, and you never have to log in to it.
 
 Running the same host again is safe. Each stage looks at what exists and changes only what differs from the description, so a second run of a finished host does nothing. See [How a host is built](how-a-host-is-built.md) for each stage.
 

@@ -136,6 +136,7 @@ The flags turn parts of a host on and off. Each is a feature of the host's confi
 | `AUDITD` | `false` | The Linux audit system |
 | `MAIL` | `true` | Postfix, for root's mail |
 | `MOSH` | `true` | mosh |
+| `DOTFILES` | `true` | The client account's dotfiles, set up by the run's dotfiles stage |
 
 Any of these can be set on one host to differ from its group.
 

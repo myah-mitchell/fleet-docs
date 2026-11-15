@@ -634,7 +634,7 @@ git -C ../fleet-private commit -m "Relay service mail through Stalwart"
 git -C ../fleet-private push
 ```
 
-In [Semaphore](../../tools/semaphore/index.md), run the **site** Template with *Target* set to `ci01`. The last stage has Komodo redeploy `core-infra-ci01`, whose *Environment* changed.
+In [Semaphore](../../tools/semaphore/index.md), run the **site** Template with *Target* set to `ci01`. The Komodo stage has Komodo redeploy `core-infra-ci01`, whose *Environment* changed.
 
 On ci01, check what Postfix was given:
 
@@ -744,7 +744,7 @@ Each of these came from documentation or from reading the stack, not from a runn
 
 - The whole page. mx01 has not been built by the run.
 - Authentik's public name. Both services check sign-ins against `auth.myah-mitchell.com`, and authentik-server carries no `kop-public` labels, so bh01 has no route for it yet.
-- Whether Stalwart's health check passes before the wizard has run. Bulwark waits for it, and so does the run's last stage.
+- Whether Stalwart's health check passes before the wizard has run. Bulwark waits for it, and so does the run's Komodo stage.
 - The WebUI's menu paths and field labels in steps 9 to 13 and in step 15. They are read from the form definitions Stalwart ships at `v0.16.22`, and the wizard's labels in step 8 from Stalwart's documentation. None was read from a running WebUI.
 - The wizard through Traefik. Stalwart's documentation suggests running it straight against port 8080, which the stack does not publish, and step 8's hosts file entry for `mail.myah-mitchell.com` has not been tried.
 - Port 8080 after the wizard. Stalwart's documentation has a reverse proxy send the WebUI, JMAP, and SCIM there, and the stack has not been run to see it.

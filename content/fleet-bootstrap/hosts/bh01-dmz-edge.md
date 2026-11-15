@@ -50,7 +50,7 @@ traefik-dmz includes traefik-agent, so the list does not name it.
 
 While `docker_stacks_bootstrap: true` is set, the run leaves out system-agent and deploys traefik-dmz alone. traefik-dmz is a Traefik itself, so the run adds no traefik-bootstrap. See [Bootstrap mode](../concepts/bootstrap-mode.md#changes).
 
-`komodo_stacks_manage: false` turns off the run's last stage for this host, the one where [Komodo](../../tools/komodo/index.md) deploys the stacks. The first run then builds bh01 and deploys nothing. cloudflared cannot start before its credentials are on the host, and [step 7](#deploy) takes the line out again once they are.
+`komodo_stacks_manage: false` turns off the run's Komodo stage for this host, the one where [Komodo](../../tools/komodo/index.md) deploys the stacks. The first run then builds bh01 and deploys nothing. cloudflared cannot start before its credentials are on the host, and [step 7](#deploy) takes the line out again once they are.
 
 In `opentofu/prod.tfvars`, add its VM inside `vms`:
 

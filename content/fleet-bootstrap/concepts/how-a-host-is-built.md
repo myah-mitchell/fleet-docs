@@ -6,9 +6,9 @@ At the end of it you know what each stage of a run changes, where a run can star
 
 Status: written, not yet run. See [Not yet confirmed](#unconfirmed).
 
-## The four stages {#stages}
+## The five stages {#stages}
 
-`site.yml` takes the hosts named in `target` through four stages, in order. The tag is the name ansible knows a stage by. A page that has you run one stage alone, or leave one out, passes it with `--tags` or `--skip-tags`.
+`site.yml` takes the hosts named in `target` through five stages, in order. The tag is the name ansible knows a stage by. A page that has you run one stage alone, or leave one out, passes it with `--tags` or `--skip-tags`.
 
 | Stage | Tag | What it does |
 | --- | --- | --- |
@@ -16,10 +16,13 @@ Status: written, not yet run. See [Not yet confirmed](#unconfirmed).
 | Wait | `wait` | Waits for the host to answer on its SSH port, for up to 30 minutes |
 | NixOS | `nixos` | Stops if the host's committed files under `nixos/` are out of date. Asks the host what it runs, installs [NixOS](../../tools/nixos/index.md) when the answer is the installer, then deploys the host's configuration |
 | Deploy the stacks | `komodo` | Runs the `fleet` [Resource Sync](../../tools/glossary.md#resource-sync) of [Komodo](../../tools/komodo/index.md) for this host's [Stacks](../../tools/glossary.md#stack), then waits until every one is running |
+| Dotfiles | `dotfiles` | Logs in to a host with the `DOTFILES` flag as the deploy account, and has [dfutil](https://github.com/myah-mitchell/dfutil) set up the client account's dotfiles. dfutil downloads its tools from GitHub's releases |
 
-Ansible runs nothing on the host itself. Every task runs on the [control node](#control-node), which calls OpenTofu, the commands of [the NixOS flake](nixos-flake.md#commands), and Komodo's API. Ansible usually copies Python code to a machine and runs it there. Here a host has no Python and needs none.
+Only the dotfiles stage logs in to the host. Every task of the first four runs on the [control node](#control-node), which calls OpenTofu, the commands of [the NixOS flake](nixos-flake.md#commands), and Komodo's API. Ansible usually copies Python code to a machine and runs it there, so the dotfiles feature gives a host Python. A host without the feature has no Python, and the dotfiles stage leaves it alone.
 
-A host that is already built goes through the same four stages, and each one changes only what differs from the description.
+The dotfiles stage is last so that a failure there, such as GitHub refusing a lookup, never keeps a host's Stacks from being deployed.
+
+A host that is already built goes through the same five stages, and each one changes only what differs from the description.
 
 | Stage | On a host that is already built |
 | --- | --- |
@@ -27,6 +30,7 @@ A host that is already built goes through the same four stages, and each one cha
 | Wait | The host answers as soon as it is up |
 | NixOS | The host answers as installed and is not installed again. The deploy activates whatever changed in its configuration |
 | Deploy the stacks | The sync redeploys a Stack that changed or is not running |
+| Dotfiles | dfutil pulls the dotfiles repo and installs a tool only when its pinned version changed |
 
 Running it twice is safe, which is why every host page says to run it again after fixing a failure. A run with that property is called [idempotent](../../tools/glossary.md#idempotent).
 
@@ -60,10 +64,11 @@ The run's own credentials come from the environment of the `ansible-playbook` pr
 | `KOMODO_API_KEY`, `KOMODO_API_SECRET` | The Komodo service user's API key |
 | `PG_CONN_STR` | The state database's connection string. The runs from the shell do without it, since they pass `-e vms_backend=local` and keep state in a file until the handover |
 | `SOPS_AGE_KEY` or `SOPS_AGE_KEY_FILE` | The [deploy key](../../tools/glossary.md#deploy-key), which decrypts the private repo's secrets. See [Secrets with sops](secrets-with-sops.md#keys) |
+| `GITHUB_TOKEN` | Optional. A token that can only read public repositories, which dfutil uses for its GitHub lookups. See [The GitHub token](../foundation/control-shell.md#github-token) |
 
 With a single Proxmox server, its token can go in `PROXMOX_VE_API_TOKEN` in place of the JSON object.
 
-The control node also holds the SSH private key whose public half is in `ansible_ssh_public_keys`. The installer, every built host, and the deploy account on each Proxmox host accept that key.
+The control node also holds the SSH private key whose public half is in `ansible_ssh_public_keys`. The installer, every built host, and the deploy account on each Proxmox host accept that key. The dotfiles stage logs in with it too, and trusts only the host key in `secrets/host-keys/<host>.yaml`, as the flake's commands do.
 
 Everything else comes from the private repo. See [The private repo](fleet-private.md). The run never asks a question, so a value missing from the [inventory](../../tools/glossary.md#inventory) stops it with a message that says what is missing.
 
@@ -148,6 +153,7 @@ Add `--check` to the command, or tick **Dry Run** in Semaphore. Ansible calls th
 | Wait | Skipped |
 | NixOS | Confirms the committed files are current, and asks over SSH whether the host is the installer, an installed host, or not there. For an installed host, it evaluates the configuration on the control node with `deploy-host --action dry-build`, which lists what would be built. Nothing on the host changes |
 | Deploy the stacks | Confirms the committed Komodo file is current, and stops there |
+| Dotfiles | For a host the NixOS stage found installed, logs in and reads its facts. dfutil does not run, so nothing lists what it would change |
 
 A host that has never been built gets less from check mode. OpenTofu still shows its plan and the committed files are still checked, but the configuration is evaluated only for a host that is already installed.
 
@@ -164,6 +170,7 @@ This list is reference. A first-time reader can skip it, and come back when a ru
 - The flake reads only the files git tracks in the private repo. The run stops when a file under `nixos/` or `secrets/` is changed, untracked, or ignored, so commit them before a run. The flake's commands run by hand are less strict: they read a file once it is added. See [After a change](fleet-private.md#after-a-change).
 - The run stops when a VM's address, prefix length, gateway, or nameservers in the tfvars file differ from the inventory. A VM with no `dns_servers` is not compared on nameservers.
 - A host's configuration is built on the host, which downloads what it lacks from the public NixOS cache. A host with no route to the internet cannot be installed or deployed this way.
+- The dotfiles stage has dfutil look up about 50 GitHub releases on a host's first run. Without `GITHUB_TOKEN`, GitHub allows 60 lookups an hour from one public address, which is about one new host an hour for the whole fleet.
 
 ## Not yet confirmed {#unconfirmed}
 
@@ -177,3 +184,4 @@ The run has been checked against the playbooks, the flake's commands, and an eva
 - Running the sync for some of its Stacks, while the file also lists Stacks for a Server that is not in Komodo yet.
 - The sync on km01, where Core redeploys the Stack it runs in. See [The first run](../foundation/first-run.md#unconfirmed).
 - A VM pinned to a node other than the server's default node.
+- The dotfiles stage against a host the run built. It ran against a NixOS VM in QEMU with the dotfiles module, a deploy account, and a client account. Every tool of the base preset ran there, nvim and the other glibc builds through nix-ld, and a host key other than the pinned one stopped the login.

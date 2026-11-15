@@ -233,7 +233,7 @@ The fleet-opentofu repo marks the encryption as enforced. Without `TF_ENCRYPTION
 
 ### The GitHub token {#github-token}
 
-`provision.yml` sets up your own login on a Proxmox host with [dfutil](https://github.com/myah-mitchell/dfutil), which looks up about 50 GitHub releases the first time it runs on a host. GitHub allows 60 of those lookups an hour from one address without a token, so a second host set up within the hour fails. With a token the limit is 5,000 an hour.
+`site.yml` sets up the client account on each NixOS host with [dfutil](https://github.com/myah-mitchell/dfutil), and `provision.yml` does the same for your own login on a Proxmox host. dfutil looks up about 50 GitHub releases the first time it runs on a host. GitHub allows 60 of those lookups an hour from one address without a token, so a second host set up within the hour fails. With a token the limit is 5,000 an hour.
 
 Create a token that can read public repositories and nothing else:
 
@@ -251,9 +251,9 @@ export GITHUB_TOKEN="<github-token>"
 
 | Variable | Read by | Holds |
 | --- | --- | --- |
-| `GITHUB_TOKEN` | dfutil, through `provision.yml` | A token for GitHub's API, which raises its limit |
+| `GITHUB_TOKEN` | dfutil, through `site.yml` and `provision.yml` | A token for GitHub's API, which raises its limit |
 
-`provision.yml` passes the token to dfutil only when it is set. Once the token expires, GitHub refuses it and dfutil stops with an authentication error, so create a new one and replace the line.
+Both playbooks pass the token to dfutil only when it is set. Once the token expires, GitHub refuses it and dfutil stops with an authentication error, so create a new one and replace the line.
 
 ## 6. Set the fleet-wide values {#fleet-values}
 

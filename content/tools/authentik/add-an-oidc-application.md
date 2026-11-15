@@ -128,7 +128,7 @@ ansible-playbook -i ../fleet-private/hosts.yml site.yml \
 
 ///
 
-The last stage redeploys the Stack with the three values in its *Environment*.
+The Komodo stage redeploys the Stack with the three values in its *Environment*.
 
 ## 6. Verify {#verify}
 
