@@ -292,11 +292,21 @@ creation_rules:
 
 Hosts are never added to this file by hand. The command that makes a host's keys adds the host. See [Host keys](../concepts/secrets-with-sops.md#host-keys).
 
-Hash the password of the admin account. The command asks for **the password** and prints the hash, which starts with `$y$`. A host needs only the hash to check a login, so the password itself is stored nowhere in the fleet.
+Hash the password of the admin account. The commands ask for **the password** twice, ask again until both entries match, and print the hash, which starts with `$y$`. A host needs only the hash to check a login, so the password itself is stored nowhere in the fleet.
 
 ```bash
-mkpasswd -m yescrypt
+bash -c '
+  while true; do
+    read -rsp "Password: " pw1 </dev/tty || exit 1; echo
+    read -rsp "Password again: " pw2 </dev/tty || exit 1; echo
+    [ -n "$pw1" ] && [ "$pw1" = "$pw2" ] && break
+    echo "The passwords are empty or do not match. Try again."
+  done
+  printf "%s" "$pw1" | mkpasswd -m yescrypt --stdin
+'
 ```
+
+mkpasswd has no option to confirm a password, so bash reads it twice and passes it on. A typo here would leave the admin account with a password nobody knows. The commands read from the terminal itself, so run them in an interactive terminal; anywhere else they stop with an error about `/dev/tty`.
 
 Write the two secrets files from the private repo's folder, where sops finds `.sops.yaml`. Neither file exists yet, so each command opens the editor named in `EDITOR` on a few sample lines that sops itself writes for a new file, and encrypts what you save:
 
